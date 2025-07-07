@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace XyphireLethalWonderworld
 {
     internal class DogToy : ThrowableItem
     {
         bool isPlaying = false;
-        float timer = 0f;
-        public float maxTimer = 10f;
+        float playTimer = 0f;
+        float maxPlayTimer = 10f;
+        float noiseTimer = 0f;
+        readonly float maxNoiseTimer = 0.2f;
         bool changedMoon = false;
         SpawnableEnemyWithRarity? enemySaved;
         int enemiesSpawned = 0;
-        public int enemiesToSpawn = 2;
+        readonly int enemiesToSpawn = 2;
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
@@ -28,6 +25,7 @@ namespace XyphireLethalWonderworld
         public override void Start()
         {
             base.Start();
+            maxPlayTimer = Plugin.config.dogtoyInterestTime.Value;
             if (IsServer && !StartOfRound.Instance.inShipPhase)
             {
                 foreach (var enemy in RoundManager.Instance.currentLevel.OutsideEnemies)
@@ -75,22 +73,28 @@ namespace XyphireLethalWonderworld
         public override void Update()
         {
             base.Update();
-            if(isPlaying)
+            if (isPlaying)
             {
-                timer += Time.deltaTime;
-                if(timer > maxTimer || playerHeldBy != null)
+                playTimer += Time.deltaTime;
+                if (playTimer > maxPlayTimer || playerHeldBy != null)
                 {
                     isPlaying = false;
-                    timer = 0f;
+                    playTimer = 0f;
+                    noiseTimer = 0f;
                     return;
                 }
 
-                RoundManager.Instance.PlayAudibleNoise(transform.position, noiseRange, 1f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed);
+                noiseTimer += Time.deltaTime;
+                if (noiseTimer > maxNoiseTimer)
+                {
+                    noiseTimer = 0f;
+                    RoundManager.Instance.PlayAudibleNoise(transform.position, noiseRange, 1f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed);
+                }
             }
 
-            if (IsServer && enemySaved != null && TimeOfDay.Instance.currentDayTime > 780 && UnityEngine.Random.Range(0f,1f) > 0.99 && enemiesSpawned < enemiesToSpawn)
+            if (IsServer && enemySaved != null && TimeOfDay.Instance.currentDayTime > 780 && UnityEngine.Random.Range(0f, 1f) > 0.99 && enemiesSpawned < enemiesToSpawn)
             {
-                Spawn(enemySaved, RoundManager.Instance.outsideAINodes[UnityEngine.Random.Range(0, RoundManager.Instance.outsideAINodes.Length-1)].transform.position);
+                Spawn(enemySaved, RoundManager.Instance.outsideAINodes[UnityEngine.Random.Range(0, RoundManager.Instance.outsideAINodes.Length - 1)].transform.position);
                 enemiesSpawned++;
             }
 
