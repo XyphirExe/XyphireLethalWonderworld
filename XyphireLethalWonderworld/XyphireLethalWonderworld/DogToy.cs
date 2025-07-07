@@ -92,7 +92,7 @@ namespace XyphireLethalWonderworld
                 }
             }
 
-            if (IsServer && enemySaved != null && TimeOfDay.Instance.currentDayTime > 780 && UnityEngine.Random.Range(0f, 1f) > 0.99 && enemiesSpawned < enemiesToSpawn)
+            if (IsServer && enemySaved != null && TimeOfDay.Instance.currentDayTime > 720 && enemiesSpawned < enemiesToSpawn && UnityEngine.Random.Range(0, 100) <= (changedMoon ? 0 : 5))
             {
                 Spawn(enemySaved, RoundManager.Instance.outsideAINodes[UnityEngine.Random.Range(0, RoundManager.Instance.outsideAINodes.Length - 1)].transform.position);
                 enemiesSpawned++;
@@ -141,7 +141,7 @@ namespace XyphireLethalWonderworld
 
         public override void DiscardItem()
         {
-            if (playerHeldBy != null)
+            if (playerHeldBy != null && !isPocketed)
             {
                 playerHeldBy.equippedUsableItemQE = false;
             }
@@ -150,7 +150,7 @@ namespace XyphireLethalWonderworld
 
         public override void OnNetworkDespawn()
         {
-            if (playerHeldBy != null)
+            if (playerHeldBy != null && !isPocketed)
             {
                 playerHeldBy.equippedUsableItemQE = false;
             }

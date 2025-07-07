@@ -1,12 +1,9 @@
 ﻿using GameNetcodeStuff;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace XyphireLethalWonderworld
 {
-    public class ThrowableItem :  NoisemakerProp
+    public class ThrowableItem : NoisemakerProp
     {
         public AnimationCurve itemFallCurve;
         public AnimationCurve itemVerticalFallCurve;
@@ -54,12 +51,8 @@ namespace XyphireLethalWonderworld
 
         public static Vector3 GetItemThrowDestination(PlayerControllerB player, float throwForce = 1)
         {
-            RaycastHit itemHit;
-            Ray itemThrowRay;
-            Debug.DrawRay(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward, Color.yellow, 15f);
-            itemThrowRay = new Ray(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward);
-            Vector3 position = ((!Physics.Raycast(itemThrowRay, out itemHit, 12f * throwForce, StartOfRound.Instance.collidersAndRoomMaskAndDefault, QueryTriggerInteraction.Ignore)) ? itemThrowRay.GetPoint(10f * throwForce) : itemThrowRay.GetPoint(itemHit.distance - 0.05f));
-            Debug.DrawRay(position, Vector3.down, Color.blue, 15f);
+            Ray itemThrowRay = new Ray(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward);
+            Vector3 position = ((!Physics.Raycast(itemThrowRay, out RaycastHit itemHit, 12f * throwForce, StartOfRound.Instance.collidersAndRoomMaskAndDefault, QueryTriggerInteraction.Ignore)) ? itemThrowRay.GetPoint(10f * throwForce) : itemThrowRay.GetPoint(itemHit.distance - 0.05f));
             itemThrowRay = new Ray(position, Vector3.down);
             if (Physics.Raycast(itemThrowRay, out itemHit, 30f, StartOfRound.Instance.collidersAndRoomMaskAndDefault, QueryTriggerInteraction.Ignore))
             {
