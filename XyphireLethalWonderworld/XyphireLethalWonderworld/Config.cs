@@ -15,7 +15,7 @@ namespace XyphireLethalWonderworld
             cfg.SaveOnConfigSet = false;
             dogtoyRarity = cfg.Bind("Dog Toy", "Rarity", 25, "The spawn chance of the Dog Toy item.");
             dogtoyValue = cfg.Bind("Dog Toy", "Scrap value", "10,40", "The min,max scrap value of the Dog Toy item. (the final value will be randomized between these 2 numbers)");
-            dogtoyInterestTime = cfg.Bind("Dog Toy", "Interest time", 10f, "The time in seconds the Dog Toy will keep the interest of Eyeless Dogs when thrown on the ground.");
+            dogtoyInterestTime = cfg.Bind("Dog Toy", "Interest time", 20f, "The time in seconds the Dog Toy will keep the interest of Eyeless Dogs when thrown on the ground.");
             cfg.Save();
             cfg.SaveOnConfigSet = true;
         }
