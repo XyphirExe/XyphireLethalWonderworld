@@ -1,13 +1,13 @@
-﻿using System;
+﻿using BepInEx;
+using BepInEx.Logging;
+using LethalLib.Modules;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using BepInEx;
-using LethalLib.Modules;
 
 namespace XyphireLethalWonderworld
 {
-    [BepInPlugin(GUID,NAME,VERSION)]
+    [BepInPlugin(GUID, NAME, VERSION)]
     public class Plugin : BaseUnityPlugin
     {
         const string GUID = "Xyphire.XyphireLethalWonderworld";
@@ -15,10 +15,16 @@ namespace XyphireLethalWonderworld
         const string VERSION = "0.1.1";
 
         public static Plugin instance;
+        public static ManualLogSource logger;
+        internal static Config config { get; private set; } = null!;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051")]
         void Awake()
         {
             instance = this;
+            logger = Logger;
+            config = new Config(Config);
+            config.SetupCustomConfigs();
 
             string assetDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "xyphirelethalwonderworld");
             AssetBundle bundle = AssetBundle.LoadFromFile(assetDir);
@@ -29,9 +35,15 @@ namespace XyphireLethalWonderworld
 
             Utilities.FixMixerGroups(dogtoy.spawnPrefab);
 
-            Items.RegisterScrap(dogtoy, 25, Levels.LevelTypes.All);
+            if (config.dogtoyValueParsed.Item1 != -1)
+            {
+                dogtoy.minValue = (int)(config.dogtoyValueParsed.Item1 * 2.5f);
+                dogtoy.maxValue = (int)(config.dogtoyValueParsed.Item2 * 2.5f);
+            }
 
-            Logger.LogInfo(NAME + " loaded.");
+            Items.RegisterScrap(dogtoy, config.dogtoyRarity.Value, Levels.LevelTypes.All);
+
+            logger.LogInfo(NAME + " loaded.");
         }
     }
 }

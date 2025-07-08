@@ -1,0 +1,10 @@
+{
+    "name": "XyphireLethalWonderworld",
+    "version_number": "0.0.2",
+    "website_url": "https://xyphire.tv",
+    "description": "Add (for now) a squeaky toy to play with Eyeless Dogs !",
+    "dependencies": [
+        "Evaisa-LethalLib-0.16.1",
+        "BepInEx-BepInExPack-5.4.2100"
+    ]
+}
